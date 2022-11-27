@@ -68,7 +68,7 @@ export async function validationUserSignUp(req, res, next) {
     }
 }
 
-export async function validationAuthorization(req, res, next) {
+export async function userValidationAuthorization(req, res, next) {
 
     const { authorization } = req.headers
 
