@@ -1,5 +1,5 @@
 import { sessionsCollection, usersCollection } from "../database/db.js";
-import { userSignInSchema, userSignUpSchema } from "../schemas/users.schema.js";
+import { userSignInSchema, userSignUpSchema } from "../schemas/user.schema.js";
 import bcrypt from 'bcrypt'
 
 export async function validationUserSignIn(req, res, next) {
@@ -83,7 +83,7 @@ export async function userValidationAuthorization(req, res, next) {
         const session = await sessionsCollection.findOne({ token })
 
         if (!session) {
-            return res.sendStatus(401)
+            return res.status(401).send({message: 'Usuário já está deslogado'})
         }
 
         const user = await usersCollection.findOne({ _id: session.userId })

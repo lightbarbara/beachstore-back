@@ -1,4 +1,4 @@
-import { sessionsCollection, cartsCollection } from "../database/db"
+import { sessionsCollection, cartsCollection } from "../database/db.js"
 
 export async function validationAuthorization(req, res, next) {
 
@@ -18,7 +18,14 @@ export async function validationAuthorization(req, res, next) {
             return res.sendStatus(401)
         }
 
-        const cart = await cartsCollection.findOne({userId: session.userId})
+        let cart = await cartsCollection.findOne({userId: session.userId})
+
+        if (cart === undefined) {
+            cart = {
+                products: [],
+                userId: session.userId
+            }
+        }
 
         res.locals.cart = cart
 
@@ -28,4 +35,17 @@ export async function validationAuthorization(req, res, next) {
         console.log(err)
         res.sendStatus(500)
     }
+}
+
+export async function cartValidation(req, res, next) {
+
+    let cart = res.locals.cart
+
+    const validation = cartSchema.validate(cart, { abortEarly: false })
+
+    if (validation.error) {
+        const errors = validation.error.details.map(detail => detail.message)
+        return res.status(422).send({ message: errors })
+    }
+
 }

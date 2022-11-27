@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { createNewCart, deleteCart, editCart, getCart } from "../controllers/cart.controllers";
-import { validationAuthorization } from "../middlewares/user.middlewares";
+import { createNewCart, deleteCart, editCart, getCart } from "../controllers/cart.controllers.js";
+import { cartValidation, validationAuthorization } from "../middlewares/cart.middlewares.js";
 
 const router = Router()
 
 router.use(validationAuthorization)
+
+router.use(cartValidation)
 
 router.get('/cart', getCart)
 
