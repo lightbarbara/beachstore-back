@@ -25,20 +25,14 @@ export async function addToCart(req, res) {
 
 }
 
-export async function editCart(req, res) {
-
-
-
-}
-
 export async function deleteItem(req, res) {
 
     
 
 }
 
-export async function deleteCart(req, res) {
+// export async function deleteCart(req, res) {
 
 
 
-}
+// }

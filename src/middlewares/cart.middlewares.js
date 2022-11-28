@@ -44,7 +44,7 @@ export async function cartPostValidation(req, res, next) {
     try {
         if (cart) {
 
-            let newProducts = [...products]
+            let newProducts = [...cart.products, ...products]
 
             await cartsCollection.deleteOne({ userId: session.userId })
 
@@ -77,44 +77,6 @@ export async function cartPostValidation(req, res, next) {
     }
 
     res.locals.cart = cart
-
-    next()
-
-}
-
-export async function cartPutValidation(req, res, next) {
-
-    const { products } = req.body
-
-    const session = res.locals.session
-
-    let cart = res.locals.cart
-
-    if (!cart) {
-        return res.status(401).send({ message: 'Você não pode atualizar um produto sem ter um carrinho' })
-    }
-
-    const validation = cartSchema.validate(cart, { abortEarly: false })
-
-    if (validation.error) {
-        const errors = validation.error.details.map(detail => detail.message)
-        return res.status(422).send({ message: errors })
-    }
-
-    try {
-
-        await cartsCollection.updateOne({ userId: session.userId }, {
-            $set: {
-                products
-            }
-        })
-
-        res.status(200).send({ message: 'Carrinho atualizado' })
-
-    } catch (err) {
-        console.log(err)
-        res.sendStatus(500)
-    }
 
     next()
 
