@@ -44,7 +44,7 @@ export async function cartPostValidation(req, res, next) {
     try {
         if (cart) {
 
-            let newProducts = [...cart.products, ...products]
+            let newProducts = [...products]
 
             await cartsCollection.deleteOne({ userId: session.userId })
 
