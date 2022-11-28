@@ -1,4 +1,4 @@
-import { cartsCollection } from "../database/db.js"
+import { cartsCollection, salesCollection } from "../database/db.js"
 
 export function getCart(req, res) {
 
@@ -16,7 +16,24 @@ export async function addToCart(req, res) {
 
         await cartsCollection.insertOne(cart)
 
-        return res.status(200).send({message: 'Item(ns) adicionado(s)'})
+        return res.status(200).send({ message: 'Item(ns) adicionado(s)' })
+
+    } catch (err) {
+        console.log(err)
+        res.sendStatus(500)
+    }
+
+}
+
+export async function deleteCart(req, res) {
+
+    const cart = res.locals.cart
+
+    try {
+
+        await cartsCollection.deleteOne({ userId: cart.userId })
+
+        return res.sendStatus(200)
 
     } catch (err) {
         console.log(err)
@@ -27,12 +44,25 @@ export async function addToCart(req, res) {
 
 export async function deleteItem(req, res) {
 
-    
+
 
 }
 
-// export async function deleteCart(req, res) {
+export async function makeSale(req, res) {
 
+    const sale = req.body
 
+    console.log(sale)
 
-// }
+    try {
+
+        await salesCollection.insertOne(sale)
+
+        return res.status(200).send({ message: 'Venda concluída' })
+
+    } catch (err) {
+        console.log(err)
+        res.sendStatus(500)
+    }
+
+}
