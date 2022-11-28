@@ -46,30 +46,11 @@ export async function cartPostValidation(req, res, next) {
 
             let newProducts = [...cart.products, ...products]
 
-            // const productsInCart = cart.products.map(p => p.product)
-
-            // console.log(productsInCart)
-
-            // console.log(products)
-
-            // for (let i = 0; i < products; i++) {
-            //     if (productsInCart.includes(products[i].product)) {
-
-            //         console.log(products[i].product)
-
-            //         newProducts.append({
-            //             product: products[i].product,
-            //             price: products[i].price,
-            //             amount: products[i].amount
-            //         })
-            //     }
-            // }
-
             await cartsCollection.deleteOne({ userId: session.userId })
 
             cart = {
                 products: newProducts,
-                price: newProducts.map(p => (p.price * p.amount)).reduce((acc, curValue) => acc + curValue),
+                price: newProducts.map(p => p.price).reduce((acc, curValue) => acc + curValue),
                 userId: session.userId
             }
 
@@ -78,7 +59,7 @@ export async function cartPostValidation(req, res, next) {
         if (!cart) {
             cart = {
                 products,
-                price: products.map(p => (p.price * p.amount)).reduce((acc, curValue) => acc + curValue),
+                price: products.map(p => p.price).reduce((acc, curValue) => acc + curValue),
                 userId: session.userId
             }
         }
