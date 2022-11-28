@@ -1,19 +1,17 @@
 import { Router } from "express";
-import { createNewCart, deleteCart, editCart, getCart } from "../controllers/cart.controllers.js";
-import { cartValidation, validationAuthorization } from "../middlewares/cart.middlewares.js";
+import { addToCart, deleteCart, editCart, getCart } from "../controllers/cart.controllers.js";
+import { cartPostValidation, cartPutValidation, validationAuthorization } from "../middlewares/cart.middlewares.js";
 
 const router = Router()
 
 router.use(validationAuthorization)
 
-router.use(cartValidation)
-
 router.get('/cart', getCart)
 
-router.post('/cart', createNewCart)
+router.post('/cart', cartPostValidation, addToCart)
 
-router.put('/cart/:id', editCart)
+router.put('/cart', cartPutValidation, editCart)
 
-router.delete('/cart:id', deleteCart)
+router.delete('/cart', deleteCart)
 
 export default router

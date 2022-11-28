@@ -2,5 +2,6 @@ import joi from 'joi'
 
 export const cartSchema = joi.object({
     products: joi.array().required(),
-    userId: joi.string().required()
+    price: joi.number().required(),
+    userId: joi.required()
 })
