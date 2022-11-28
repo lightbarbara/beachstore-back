@@ -39,20 +39,33 @@ export async function cartPostValidation(req, res, next) {
 
     const session = res.locals.session
 
-    let cart = await cartsCollection.findOne({ userId: session.userId })
-
-    if (!cart) {
-        cart = {
-            products,
-            price: products.map(p => (p.price * p.amount)).reduce((acc, curValue) => acc + curValue),
-            userId: session.userId
-        }
-    }
+    let cart = res.locals.cart
 
     try {
         if (cart) {
 
-            const newProducts = [...cart.products, ...products]
+            let newProducts = [...cart.products, ...products]
+
+            // const productsInCart = cart.products.map(p => p.product)
+
+            // console.log(productsInCart)
+
+            // console.log(products)
+
+            // for (let i = 0; i < products; i++) {
+            //     if (productsInCart.includes(products[i].product)) {
+
+            //         console.log(products[i].product)
+
+            //         newProducts.append({
+            //             product: products[i].product,
+            //             price: products[i].price,
+            //             amount: products[i].amount
+            //         })
+            //     }
+            // }
+
+            await cartsCollection.deleteOne({ userId: session.userId })
 
             cart = {
                 products: newProducts,
@@ -60,9 +73,16 @@ export async function cartPostValidation(req, res, next) {
                 userId: session.userId
             }
 
-            await cartsCollection.deleteOne({ userId: session.userId })
-
         }
+
+        if (!cart) {
+            cart = {
+                products,
+                price: products.map(p => (p.price * p.amount)).reduce((acc, curValue) => acc + curValue),
+                userId: session.userId
+            }
+        }
+
     } catch (err) {
         console.log(err)
         res.sendStatus(500)

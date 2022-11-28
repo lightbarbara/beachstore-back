@@ -10,7 +10,7 @@ router.get('/cart', getCart)
 
 router.post('/cart', cartPostValidation, addToCart)
 
-router.put('/cart', cartPutValidation, editCart)
+// router.put('/cart', cartPutValidation, editCart)
 
 router.delete('/cart', deleteCart)
 
