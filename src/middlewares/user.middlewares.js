@@ -10,7 +10,8 @@ export async function validationUserSignIn(req, res, next) {
 
     if (validation.error) {
         const errors = validation.error.details.map(detail => detail.message)
-        return res.status(422).send({ message: errors })
+        res.status(422).send({ message: errors })
+        return
     }
 
     try {
@@ -20,7 +21,8 @@ export async function validationUserSignIn(req, res, next) {
         const validatePassword = bcrypt.compareSync(password, userExists.password)
 
         if (!userExists || !validatePassword) {
-            return res.status(401).send({ message: 'Dados incorretos' })
+            res.status(401).send({ message: 'Dados incorretos' })
+            return
         }
 
         const userLoggedIn = await sessionsCollection.findOne({ userId: userExists._id })
@@ -47,7 +49,8 @@ export async function validationUserSignUp(req, res, next) {
 
     if (validation.error) {
         const errors = validation.error.details.map(detail => detail.message)
-        return res.status(422).send({ message: errors })
+        res.status(422).send({ message: errors })
+        return
     }
 
     try {
@@ -55,7 +58,8 @@ export async function validationUserSignUp(req, res, next) {
         const userExists = await usersCollection.findOne({ email })
 
         if (userExists) {
-            return res.status(409).send({ message: 'Usuário já cadastrado' })
+            res.status(409).send({ message: 'Usuário já cadastrado' })
+            return
         }
 
         res.locals.user = { name, email, password }
@@ -83,7 +87,8 @@ export async function userValidationAuthorization(req, res, next) {
         const session = await sessionsCollection.findOne({ token })
 
         if (!session) {
-            return res.status(401).send({message: 'Usuário já está deslogado'})
+            res.status(401).send({message: 'Usuário já está deslogado'})
+            return
         }
 
         const user = await usersCollection.findOne({ _id: session.userId })
